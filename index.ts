@@ -41,7 +41,8 @@ cron.schedule('*/110 * * * *', async () => {
 cron.schedule('*/5 * * * *', async () => {
   console.log('Running this task every 5 minutes:', new Date().toLocaleTimeString());
   const projects = await prisma.project.findMany();
-  projects.forEach(async function(project) {
+  const activeProjects = projects.filter(project => project.active);
+  activeProjects.forEach(async function(project) {
         const user = await prisma.user.findFirst({
             where: {
                 id: project.ownerId
@@ -58,23 +59,21 @@ cron.schedule('*/5 * * * *', async () => {
                     if ((isApproved || isApproved == "Approved") && !isGrantSent) {
                         console.log('Sending grant to ' + record.get('First Name'));
                         const email = record.get('Email');
-                        const response = {ok: true};
-                        // const response = await fetch(`${authBaseUrl}/organizations/${project.organization}/card_grants`, {
-                        //     method: "POST",
-                        //     headers: {
-                        //         Authorization: `Bearer ${user.access_token}`,
-                        //         "Content-Type": "application/json",
-                        //     },
-                        //     body: JSON.stringify({
-                        //         email: email,
-                        //         amount_cents: project.grantAmount,
-                        //         merchant_lock: "",
-                        //         category_lock: "",
-                        //         keyword_lock: ""
-                        //     }),
-                        // });
-                        // let data = await response.json();
-                        // console.log(data);
+                        const response = await fetch(`${authBaseUrl}/organizations/${project.organization}/card_grants`, {
+                            method: "POST",
+                            headers: {
+                                Authorization: `Bearer ${user.access_token}`,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                                amount_cents: project.grantAmount,
+                                merchant_lock: "",
+                                category_lock: "",
+                                keyword_lock: ""
+                            }),
+                        });
+                        let data = await response.json();
                         record.patchUpdate({
                             [project.airtable_grant_id]: true
                         });
