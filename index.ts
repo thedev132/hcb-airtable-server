@@ -67,11 +67,12 @@ cron.schedule('*/5 * * * *', async () => {
                             },
                             body: JSON.stringify({
                                 email: email,
-                                amount_cents: project.grantAmount,
-                                merchant_lock: "",
-                                category_lock: "",
-                                keyword_lock: ""
-                            }),
+                                amount_cents: project?.grantAmount,
+                                merchant_lock: project?.merchant_locks,
+                                category_lock: project?.category_locks,
+                                keyword_lock: project?.keyword_lock,
+                                purpose: project?.grant_purpose,
+                              }),
                         });
                         let data = await response.json();
                         record.patchUpdate({
@@ -155,11 +156,12 @@ async function testGrant() {
                                   "Content-Type": "application/json",
                               },
                               body: JSON.stringify({
-                                  email: email,
-                                  amount_cents: project.grantAmount,
-                                  merchant_lock: "",
-                                  category_lock: "",
-                                  keyword_lock: ""
+                                email: email,
+                                amount_cents: project?.grantAmount,
+                                merchant_lock: project?.merchant_locks,
+                                category_lock: project?.category_locks,
+                                keyword_lock: project?.keyword_lock,
+                                purpose: project?.grant_purpose,
                               }),
                           });
                           let data = await response.json();

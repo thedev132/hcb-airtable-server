@@ -36,6 +36,10 @@ model Project {
   active               Boolean      @default(true)
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @default(now())
+  category_locks       String[]     @default([])
+  grant_purpose        String?
+  keyword_lock         String?
+  merchant_locks       String[]     @default([])
   runs                 Automation[]
   owner                User         @relation(fields: [ownerId], references: [id])
 }
@@ -52,5 +56,6 @@ model Automation {
   errorMessage  String?
   status        String
   updatedAt     DateTime @default(now())
+  grantId       String?
   project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
