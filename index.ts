@@ -68,8 +68,8 @@ cron.schedule('*/5 * * * *', async () => {
                             body: JSON.stringify({
                                 email: email,
                                 amount_cents: project?.grantAmount,
-                                merchant_lock: project?.merchant_locks,
-                                category_lock: project?.category_locks,
+                                merchant_lock: project?.merchant_locks.join(','),
+                                category_lock: project?.category_locks.join(','),
                                 keyword_lock: project?.keyword_lock,
                                 purpose: project?.grant_purpose,
                               }),
