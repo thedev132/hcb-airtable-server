@@ -75,10 +75,10 @@ cron.schedule('*/5 * * * *', async () => {
                               }),
                         });
                         let data = await response.json();
-                        record.patchUpdate({
+                        await record.patchUpdate({
                             [project.airtable_grant_id]: true
                         });
-                        prisma.automation.create({
+                        await prisma.automation.create({
                             data: {
                                 projectId: project.id,
                                 recieverEmail: email ? email.toString() : '',
@@ -190,4 +190,3 @@ async function testGrant() {
     });
   }  
 
-testGrant();
