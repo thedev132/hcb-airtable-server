@@ -86,6 +86,7 @@ cron.schedule('*/5 * * * *', async () => {
                                 recieverId: record.id,
                                 name: `Grant to ${record.get('First Name') + ' ' + record.get('Last Name')}`,
                                 status: response.ok ? 'Success' : 'Failed',
+                                grantId: response.ok ? (await response.json()).id : "",
                             }
                         })
 
@@ -149,22 +150,23 @@ async function testGrant() {
                       if ((isApproved || isApproved == "Approved") && !isGrantSent) {
                           console.log('Sending grant to ' + record.get('First Name'));
                           const email = record.get('Email');
-                          const response = await fetch(`${authBaseUrl}/organizations/${project.organization}/card_grants`, {
-                              method: "POST",
-                              headers: {
-                                  Authorization: `Bearer ${user.access_token}`,
-                                  "Content-Type": "application/json",
-                              },
-                              body: JSON.stringify({
-                                email: email,
-                                amount_cents: project?.grantAmount,
-                                merchant_lock: project?.merchant_locks,
-                                category_lock: project?.category_locks,
-                                keyword_lock: project?.keyword_lock,
-                                purpose: project?.grant_purpose,
-                              }),
-                          });
-                          let data = await response.json();
+                          const response = {ok: true};
+                        //   const response = await fetch(`${authBaseUrl}/organizations/${project.organization}/card_grants`, {
+                        //       method: "POST",
+                        //       headers: {
+                        //           Authorization: `Bearer ${user.access_token}`,
+                        //           "Content-Type": "application/json",
+                        //       },
+                        //       body: JSON.stringify({
+                        //         email: email,
+                        //         amount_cents: project?.grantAmount,
+                        //         merchant_lock: project?.merchant_locks,
+                        //         category_lock: project?.category_locks,
+                        //         keyword_lock: project?.keyword_lock,
+                        //         purpose: project?.grant_purpose,
+                        //       }),
+                        //   });
+                        //   let data = await response.json();
                           record.patchUpdate({
                               [project.airtable_grant_id]: true
                           });
@@ -190,3 +192,4 @@ async function testGrant() {
     });
   }  
 
+// testGrant();
